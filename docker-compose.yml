@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  app:
+    image: frog_flask
+    ports:
+      - "9999:5000"
+    restart: unless-stopped
