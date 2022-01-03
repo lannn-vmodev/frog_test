@@ -16,6 +16,7 @@ class Config:
 
 app.config.from_object(Config)
 
+# validate the data type using pydantic
 
 class RequestBodyModel(BaseModel):
     leaves_pos: List[int]
@@ -28,7 +29,10 @@ class ResponseModel(BaseModel):
 
 
 def convert_list_to_dictionary(leaves_pos: list):
-    ''' convert list to dictionary which sort by key ( time ) '''
+    ''' 
+    convert list to dictionary, get only min value  ( time ) in each position ( key ), 
+    and return max value ( Latest leaf fall time ) in this time list.
+    '''
     data = {}
     last_pos_time = 0
     for f_time, pos in enumerate(leaves_pos):
@@ -46,17 +50,19 @@ def solution(body: RequestBodyModel):
     start_time = time.time()
     leaves_pos = body.leaves_pos
     river_size = body.river_size
+    # validate the data value
     if len(leaves_pos) < 1 or len(leaves_pos) > 100000 or river_size > 100000 or river_size < 1:
         return ResponseModel(time_to_jump=-1, message="The value mush in range 1 to 100000"), 400
     if river_size > len(leaves_pos):
         return ResponseModel(time_to_jump=-1, message="The frog can't jump to another river side")
+    
     data, time_to_jump = convert_list_to_dictionary(leaves_pos)
+    
     if len(data) == river_size:
         message = f"The frog can start to jump at {time_to_jump} seconds"
     else:
         time_to_jump = -1
         message = "The frog can't jump to another river side"
-
     print('time', time.time() - start_time)
     return ResponseModel(time_to_jump=time_to_jump, message=message)
 
