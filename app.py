@@ -58,11 +58,12 @@ def solution(body: RequestBodyModel):
     
     data, time_to_jump = convert_list_to_dictionary(leaves_pos)
     
-    if len(data) == river_size:
-        message = f"The frog can start to jump at {time_to_jump} seconds"
-    else:
+    if len(data) < river_size:
         time_to_jump = -1
         message = "The frog can't jump to another river side"
+    else:
+        message = f"The frog can start to jump at {time_to_jump} seconds"
+        
     print('time', time.time() - start_time)
     return ResponseModel(time_to_jump=time_to_jump, message=message)
 
